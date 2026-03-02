@@ -1,0 +1,247 @@
+{
+  "info": {
+    "name": "Coworking Space API",
+    "_postman_id": "c40a3b6e-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "description": "Requests for registration, auth, spaces and reservations",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Alice\",\n  \"tel\": \"0123456789\",\n  \"email\": \"alice@example.com\",\n  \"password\": \"secret\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5004/api/v1/auth/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","auth","register"]
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"alice@example.com\",\n  \"password\": \"secret\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5004/api/v1/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","auth","login"]
+        }
+      }
+    },
+    {
+      "name": "Get current user",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Cookie", "value": "token={{authToken}}" }],
+        "url": {
+          "raw": "http://localhost:5004/api/v1/auth/me",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","auth","me"]
+        }
+      }
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Cookie", "value": "token={{authToken}}" }],
+        "url": {
+          "raw": "http://localhost:5004/api/v1/auth/logout",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","auth","logout"]
+        }
+      }
+    },
+    {
+      "name": "List spaces",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:5004/api/v1/spaces",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","spaces"]
+        }
+      }
+    },
+    {
+      "name": "Create space (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Cookie", "value": "token={{authToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Downtown Hub\",\n  \"address\": \"123 Main St\",\n  \"tel\": \"0987654321\",\n  \"openTime\": \"08:00\",\n  \"closeTime\": \"20:00\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost/5004/api/v1/spaces",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","spaces"]
+        }
+      }
+    },
+    {
+      "name": "Get space by id",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:5004/api/v1/spaces/{{spaceId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","spaces","{{spaceId}}"]
+        }
+      }
+    },
+    {
+      "name": "Update space (admin)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Cookie", "value": "token={{authToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tel\": \"0121121212\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5004/api/v1/spaces/{{spaceId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","spaces","{{spaceId}}"]
+        }
+      }
+    },
+    {
+      "name": "Delete space (admin)",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Cookie", "value": "token={{authToken}}" }],
+        "url": {
+          "raw": "http://localhost:5004/api/v1/spaces/{{spaceId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","spaces","{{spaceId}}"]
+        }
+      }
+    },
+    {
+      "name": "List my reservations",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Cookie", "value": "token={{authToken}}" }],
+        "url": {
+          "raw": "http://localhost:5004/api/v1/reservations",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","reservations"]
+        }
+      }
+    },
+    {
+      "name": "List reservations for space",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Cookie", "value": "token={{authToken}}" }],
+        "url": {
+          "raw": "http://localhost:5004/api/v1/spaces/{{spaceId}}/reservations",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","spaces","{{spaceId}}","reservations"]
+        }
+      }
+    },
+    {
+      "name": "Create reservation",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Cookie", "value": "token={{authToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reservationDate\": \"2024-03-01T10:00:00.000Z\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5004/api/v1/spaces/{{spaceId}}/reservations",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","spaces","{{spaceId}}","reservations"]
+        }
+      }
+    },
+    {
+      "name": "Update reservation",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Cookie", "value": "token={{authToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reservationDate\": \"2024-03-02T10:00:00.000Z\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5004/api/v1/reservations/{{reservationId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","reservations","{{reservationId}}"]
+        }
+      }
+    },
+    {
+      "name": "Delete reservation",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Cookie", "value": "token={{authToken}}" }],
+        "url": {
+          "raw": "http://localhost:5004/api/v1/reservations/{{reservationId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5004",
+          "path": ["api","v1","reservations","{{reservationId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "authToken", "value": "" },
+    { "key": "spaceId", "value": "" },
+    { "key": "reservationId", "value": "" }
+  ]
+}
