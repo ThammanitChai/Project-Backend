@@ -23,7 +23,12 @@ connectDB();
 const app = express();
 
 /* ===========================
-   🔥 CORS FIX (จบแน่นอน)
+   🔥 FIX สำคัญที่สุด (กัน crash)
+=========================== */
+app.set('trust proxy', 1); // ✅ แก้ express-rate-limit crash
+
+/* ===========================
+   🔥 CORS FIX
 =========================== */
 app.use(cors({
   origin: "*",
@@ -31,6 +36,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
+// preflight fix
 app.options("*", cors());
 
 /* ===========================
@@ -42,11 +48,15 @@ app.use(mongoSanitize());
 app.use(helmet());
 app.use(xss());
 
+/* ===========================
+   Rate Limit (ตอนนี้ไม่ crash แล้ว)
+=========================== */
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 100
 });
 app.use(limiter);
+
 app.use(hpp());
 
 /* ===========================
