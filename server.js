@@ -9,29 +9,40 @@ const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const cors = require('cors');
 
+// Routes
 const spaces = require('./routes/spaces');
 const reservations = require('./routes/reservations');
 const auth = require('./routes/auth');
 
-// ✅ โหลด ENV
+// Load ENV
 dotenv.config();
 
-// ✅ connect database
+// Connect DB
 connectDB();
 
 const app = express();
 
-// ✅ สำคัญมาก (แก้ CORS ตรงนี้)
+// 🔥🔥🔥 CORS (สำคัญสุด)
 app.use(cors({
-  origin: "*", // ใช้ง่ายสุดตอน dev
+  origin: [
+    "http://localhost:3000",
+    "https://front-project-9145.vercel.app"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
+// 🔥 fallback (กันพัง)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  next();
+});
+
 // Body parser
 app.use(express.json());
 
-// Security
+// Security middleware
 app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(helmet());
@@ -50,21 +61,24 @@ app.use('/api/v1/reservations', reservations);
 app.use('/api/v1/spaces/:spaceId/reservations', reservations);
 app.use('/api/v1/auth', auth);
 
-// Root test route (เอาไว้เช็คว่า server ยังอยู่)
+// ✅ health check (สำคัญมาก)
 app.get('/', (req, res) => {
-  res.send('API is running...');
+  res.status(200).json({
+    success: true,
+    message: "API is running 🚀"
+  });
 });
 
-// PORT
+// PORT (Railway ต้องใช้ process.env.PORT)
 const PORT = process.env.PORT || 8080;
 
-// start server
+// Start server
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// handle error
+// Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
-  console.log(`Error: ${err.message}`);
+  console.log(`❌ Error: ${err.message}`);
   server.close(() => process.exit(1));
 });
