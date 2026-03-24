@@ -22,27 +22,30 @@ connectDB();
 
 const app = express();
 
-// 🔥🔥🔥 CORS (สำคัญสุด)
-app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "https://front-project-9145.vercel.app"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+/* ==============================
+   🔥🔥 CORS FIX (ตัวสำคัญสุด)
+================================ */
+const corsOptions = {
+  origin: "*", // เอาชัวร์ ใช้ได้ทุก domain (dev + vercel)
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
-}));
+};
 
-// 🔥 fallback (กันพัง)
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  next();
-});
+// ใช้ cors ปกติ
+app.use(cors(corsOptions));
+
+// 🔥 แก้ preflight request (สำคัญมาก)
+app.options("*", cors(corsOptions));
+
+/* ==============================
+   Middleware
+================================ */
 
 // Body parser
 app.use(express.json());
 
-// Security middleware
+// Security
 app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(helmet());
@@ -55,13 +58,17 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(hpp());
 
-// Routes
+/* ==============================
+   Routes
+================================ */
 app.use('/api/v1/spaces', spaces);
 app.use('/api/v1/reservations', reservations);
 app.use('/api/v1/spaces/:spaceId/reservations', reservations);
 app.use('/api/v1/auth', auth);
 
-// ✅ health check (สำคัญมาก)
+/* ==============================
+   Health Check
+================================ */
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
@@ -69,15 +76,18 @@ app.get('/', (req, res) => {
   });
 });
 
-// PORT (Railway ต้องใช้ process.env.PORT)
+/* ==============================
+   Server Start
+================================ */
 const PORT = process.env.PORT || 8080;
 
-// Start server
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// Handle unhandled promise rejections
+/* ==============================
+   Error Handler
+================================ */
 process.on('unhandledRejection', (err) => {
   console.log(`❌ Error: ${err.message}`);
   server.close(() => process.exit(1));
