@@ -14,7 +14,7 @@ const spaces = require('./routes/spaces');
 const reservations = require('./routes/reservations');
 const auth = require('./routes/auth');
 
-// Load ENV
+// Load env
 dotenv.config();
 
 // Connect DB
@@ -22,30 +22,21 @@ connectDB();
 
 const app = express();
 
-/* ==============================
-   🔥🔥 CORS FIX (ตัวสำคัญสุด)
-================================ */
-const corsOptions = {
-  origin: "*", // เอาชัวร์ ใช้ได้ทุก domain (dev + vercel)
+/* ===========================
+   🔥 CORS FIX (จบแน่นอน)
+=========================== */
+app.use(cors({
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-};
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
-// ใช้ cors ปกติ
-app.use(cors(corsOptions));
+app.options("*", cors());
 
-// 🔥 แก้ preflight request (สำคัญมาก)
-app.options("*", cors(corsOptions));
-
-/* ==============================
+/* ===========================
    Middleware
-================================ */
-
-// Body parser
+=========================== */
 app.use(express.json());
-
-// Security
 app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(helmet());
@@ -58,17 +49,17 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(hpp());
 
-/* ==============================
+/* ===========================
    Routes
-================================ */
+=========================== */
 app.use('/api/v1/spaces', spaces);
 app.use('/api/v1/reservations', reservations);
 app.use('/api/v1/spaces/:spaceId/reservations', reservations);
 app.use('/api/v1/auth', auth);
 
-/* ==============================
+/* ===========================
    Health Check
-================================ */
+=========================== */
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
@@ -76,19 +67,19 @@ app.get('/', (req, res) => {
   });
 });
 
-/* ==============================
+/* ===========================
    Server Start
-================================ */
+=========================== */
 const PORT = process.env.PORT || 8080;
 
 const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
 
-/* ==============================
+/* ===========================
    Error Handler
-================================ */
+=========================== */
 process.on('unhandledRejection', (err) => {
-  console.log(`❌ Error: ${err.message}`);
+  console.error(`❌ Error: ${err.message}`);
   server.close(() => process.exit(1));
 });

@@ -2,21 +2,15 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    const mongoURI =
-      process.env.MONGO_URL ||
-      process.env.MONGO_URI;
-
-    if (!mongoURI) {
-      console.error('❌ MongoDB URI is missing');
-      process.exit(1);
+    if (!process.env.MONGO_URL) {
+      throw new Error("MONGO_URL is missing ❌");
     }
 
-    const conn = await mongoose.connect(mongoURI);
+    const conn = await mongoose.connect(process.env.MONGO_URL);
 
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-
-  } catch (err) {
-    console.error(`❌ Error: ${err.message}`);
+    console.log("✅ MongoDB Connected");
+  } catch (error) {
+    console.error("❌ DB Error:", error.message);
     process.exit(1);
   }
 };
