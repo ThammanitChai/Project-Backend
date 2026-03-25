@@ -1,6 +1,9 @@
-
 const express = require('express');
 const { getSpaces, getSpace, createSpace, updateSpace, deleteSpace } = require('../controller/spaces');
+
+
+const reservationRouter = require('./reservations');
+router.use('/:spaceId/reservations', reservationRouter);
 
 /**
  * @swagger
