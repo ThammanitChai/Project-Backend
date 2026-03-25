@@ -1,4 +1,6 @@
 const express = require('express');
+const router = express.Router({ mergeParams: true }); // ✅ สำคัญ
+
 const {
   getReservations,
   getReservation,
@@ -7,16 +9,15 @@ const {
   deleteReservation
 } = require('../controller/reservations');
 
-const router = express.Router({ mergeParams: true });
 const { protect, authorize } = require('../middleware/auth');
 
-// ✅ GET ALL / CREATE
+// GET ALL + CREATE
 router
   .route('/')
   .get(protect, getReservations)
   .post(protect, authorize('admin', 'user'), addReservation);
 
-// ✅ GET ONE / UPDATE / DELETE
+// GET ONE / UPDATE / DELETE
 router
   .route('/:id')
   .get(protect, getReservation)
